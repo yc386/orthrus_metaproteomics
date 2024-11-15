@@ -9,7 +9,7 @@
 ## Documentation
 - under construction but please see Notebooks' annotations
 
-## FAQ
+## FAQs
 1. Do I need a Google Colab subscription?<br>Without any Colab+, general CPU runtime, T4 GPU, and TPU should still be accessible.
 2. Do I need a Google account? <br> May make life easier. Colab can also access files in your Google drive (with permission).
 3. Help! Still unsure how to walk Orthrus. <br> Open an issue or get in touch with me (preprint link)
