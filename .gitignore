@@ -1,3 +1,4 @@
 data/
 orthrus_v1/uniprot_sprot.fasta*
 orthrus_v1/lightning_logs/
+**/.ipynb_checkpoints/
