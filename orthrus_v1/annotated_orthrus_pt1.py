@@ -44,7 +44,7 @@
 algorithm = "instanovo"  # @param ["instanovo", "casanovo"]
 # @markdown - use the drop-down menu to choose the de novo sequencing algorithm
 
-folder_path = "./data/PXD027613/mzML"  # @param {type:"string"}
+folder_path = "./test_data"  # @param {type:"string"}
 # @markdown - a folder contains single or multiple `.mzML` or `.mgf` files for the de novo sequencing algorithm (`Instanovo` or `Casanovo`). Please check only _ (underscore) and no other special characters or space in a file name.
 file_type = "mzML"  # @param ["mzML", "mgf"]
 # @markdown - use the drop-down menu to choose the instrument file type
@@ -381,9 +381,10 @@ if algorithm == "instanovo":
     for instrument_file in folder:
         output_path = instrument_file.replace(f".{file_type}", ".csv")
         if use_default:
-            os.system(
-                "curl -LRO https://github.com/instadeepai/InstaNovo/releases/download/1.0.0/instanovo_extended.ckpt"
-            )
+            if not os.path.isfile("instanovo_extended.ckpt"):
+                os.system(
+                    "curl -LRO https://github.com/instadeepai/InstaNovo/releases/download/1.0.0/instanovo_extended.ckpt"
+                )
             os.system(
                 f"python -m instanovo.transformer.predict data_path={instrument_file} model_path='instanovo_extended.ckpt' denovo=True output_path={output_path}"
             )
@@ -408,18 +409,20 @@ elif algorithm == "casanovo":
 if use_SwissProt:
     url = "https://ftp.uniprot.org/pub/databases/uniprot/knowledgebase/complete/uniprot_sprot.fasta.gz"
     output_file = "uniprot_sprot.fasta.gz"
-    decompressed_file = "uniprot_sprot.fasta"
-    response = requests.get(url, stream=True)
-    if response.status_code == 200:
-        with open(output_file, "wb") as f:
-            shutil.copyfileobj(response.raw, f)
-        print(f"{output_file} downloaded successfully.")
-    else:
-        print(f"Failed to download {output_file}, status code: {response.status_code}")
-    with gzip.open(output_file, "rb") as f_in:
-        with open(decompressed_file, "wb") as f_out:
-            shutil.copyfileobj(f_in, f_out)
     sprot_path = "uniprot_sprot.fasta"
+    if not os.path.isfile(sprot_path):
+        response = requests.get(url, stream=True)
+        if response.status_code == 200:
+            with open(output_file, "wb") as f:
+                shutil.copyfileobj(response.raw, f)
+            print(f"{output_file} downloaded successfully.")
+        else:
+            print(
+                f"Failed to download {output_file}, status code: {response.status_code}"
+            )
+        with gzip.open(output_file, "rb") as f_in:
+            with open(sprot_path, "wb") as f_out:
+                shutil.copyfileobj(f_in, f_out)
     process_all_files(folder_path, sprot_path, algorithm)
 
 else:

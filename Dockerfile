@@ -6,6 +6,17 @@ WORKDIR /app
 COPY environment.yml .
 RUN conda env create -f environment.yml
 
+# Install make and curl
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        curl \
+        make \
+    && \
+    apt-get update -y && \
+    apt-get clean && \
+    rm -rf /var/lib/{apt,dpkg,cache,log}
+
+
 # Make RUN commands use the new environment:
 SHELL ["conda", "run", "-n", "orthrus", "/bin/bash", "-c"]
 
