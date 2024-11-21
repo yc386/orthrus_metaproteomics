@@ -44,7 +44,7 @@
 algorithm = "instanovo"  # @param ["instanovo", "casanovo"]
 # @markdown - use the drop-down menu to choose the de novo sequencing algorithm
 
-folder_path = "./test_data"  # @param {type:"string"}
+folder_path = "./data/PXD027613"  # @param {type:"string"}
 # @markdown - a folder contains single or multiple `.mzML` or `.mgf` files for the de novo sequencing algorithm (`Instanovo` or `Casanovo`). Please check only _ (underscore) and no other special characters or space in a file name.
 file_type = "mzML"  # @param ["mzML", "mgf"]
 # @markdown - use the drop-down menu to choose the instrument file type
@@ -139,6 +139,7 @@ def prep_csv(csv_path):
     df = pd.read_csv(csv_path)
     if df is None or df.empty:
         raise ValueError(f"{csv_path} is empty")
+    df = df.rename(columns={"preds": "sequence"})
     if "sequence" not in df.columns:
         raise KeyError(f"'sequence' column is missing in the file: {csv_path}")
     df.reset_index(drop=True)
@@ -178,19 +179,21 @@ def fasta_to_df(fasta_file):
     return df1
 
 
-def filter_denovo(df):
+def filter_casanovo(df):
     """Filter a de novo output file based on the maximum value below 0.
 
     search_engine_score[1] is a score assigned to each prediction by Casanovo, max=1,
     if negative then outside the mass tolerance
-    input=pandas dataframe
-    output=pandas dataframe
-
     """
     np_array = df["search_engine_score[1]"].to_numpy()
     max_below_zero = np_array[np_array < 0].max()
     df1 = df[df["search_engine_score[1]"] >= max_below_zero]
     return df1
+
+
+def filter_instanovo(df):
+    """TODO!"""
+    return df
 
 
 # prepare overlapping sequence tags for string matching
@@ -199,7 +202,7 @@ def get_seq_tags(sequence, k):
     return set(sequence[i : i + k] for i in range(len(sequence) - k + 1))
 
 
-def matching_count_v5(df, df1, k, chunk_size=10000):
+def matching_count(df, df1, k, chunk_size=10000):
     """Match de novo-based tags with database tags.
 
     I=L in a reference database
@@ -300,7 +303,7 @@ def get_bayes_ranking_test(df, threshold=0.95):
 def matching_ranking_to_fasta_mztab(mztab_path, fasta_df):
     """Generate a fasta file based on the matched proteins."""
     denovo_df = prep_mztab(mztab_path)
-    denovo_df = filter_denovo(denovo_df)
+    denovo_df = filter_casanovo(denovo_df)
     filestem = os.path.splitext(mztab_path)[0]
     return matching_ranking_to_fasta(denovo_df, fasta_df, filestem)
 
@@ -308,7 +311,7 @@ def matching_ranking_to_fasta_mztab(mztab_path, fasta_df):
 def matching_ranking_to_fasta_csv(csv_path, fasta_df):
     """Generate a fasta file based on the matched proteins."""
     denovo_df = prep_csv(csv_path)
-    denovo_df = filter_denovo(denovo_df)
+    denovo_df = filter_instanovo(denovo_df)
     filestem = os.path.splitext(csv_path)[0]
     return matching_ranking_to_fasta(denovo_df, fasta_df, filestem)
 
@@ -316,7 +319,7 @@ def matching_ranking_to_fasta_csv(csv_path, fasta_df):
 def matching_ranking_to_fasta(denovo_df, fasta_df, filestem):
     """Generate a fasta file based on the matched proteins."""
     k = int(denovo_df["nAA"].median())
-    m = matching_count_v5(fasta_df, denovo_df, k, chunk_size=10000)
+    m = matching_count(fasta_df, denovo_df, k, chunk_size=10000)
     m1 = get_bayes_ranking_test(m)
     seq_records = []
     for _index, row in m1.iterrows():
@@ -334,7 +337,7 @@ def matching_ranking_to_fasta(denovo_df, fasta_df, filestem):
 
 
 # generate a de novo-first, experiment-specific .fasta for each input
-def process_all_mztab_files_v2(folder_path, database_path):
+def process_all_mztab_files(folder_path, database_path):
     """Process all .mztab files in a folder."""
     mztab_filepaths = glob.glob(f"{folder_path}/*.mztab")
     print(f"🗂️ {len(mztab_filepaths)} file(s) collecting from {folder_path}...")
@@ -352,15 +355,13 @@ def process_all_csv_files(folder_path, database_path):
     """Process all .csv files in a folder."""
     csv_filepaths = glob.glob(f"{folder_path}/*.csv")
     print(f"🗂️ {len(csv_filepaths)} file(s) collecting from {folder_path}...")
-    fas = fasta_to_df(database_path)
-    fasta_df = pd.DataFrame.from_dict(fas)
+    fasta_df = fasta_to_df(database_path)
     print(f"⬆️ {database_path} loaded")
     print(f"📤 No. of proteins in the reference fasta: {fasta_df.shape[0]}")
 
     for csv_filepath in csv_filepaths:
         print(f"🚀 Processing file: {csv_filepath}")
-        filestem = os.path.splitext(csv_filepath)[0]
-        matching_ranking_to_fasta(csv_filepath, fasta_df, filestem)
+        matching_ranking_to_fasta_csv(csv_filepath, fasta_df)
 
 
 def process_all_files(folder_path, database_path, algorithm):
@@ -368,7 +369,7 @@ def process_all_files(folder_path, database_path, algorithm):
     if algorithm == "instanovo":
         process_all_csv_files(folder_path, database_path)
     elif algorithm == "casanovo":
-        process_all_mztab_files_v2(folder_path, database_path)
+        process_all_mztab_files(folder_path, database_path)
     else:
         raise ValueError("Invalid algorithm name")
 
@@ -386,14 +387,16 @@ if algorithm == "instanovo":
                 os.system(
                     "curl -LRO https://github.com/instadeepai/InstaNovo/releases/download/1.0.0/instanovo_extended.ckpt"
                 )
-            os.system(
-                f"python -m instanovo.transformer.predict data_path={instrument_file} model_path='instanovo_extended.ckpt' denovo=True output_path={output_path}"
-            )
+            if not os.path.isfile(output_path):
+                os.system(
+                    f"python -m instanovo.transformer.predict data_path={instrument_file} model_path='instanovo_extended.ckpt' denovo=True output_path={output_path}"
+                )
         else:
             # TODO add config
-            os.system(
-                f"python -m instanovo.transformer.predict data_path={instrument_file} model_path={checkpoint} denovo=True output_path={output_path}"
-            )
+            if not os.path.isfile(output_path):
+                os.system(
+                    f"python -m instanovo.transformer.predict data_path={instrument_file} model_path={checkpoint} denovo=True output_path={output_path}"
+                )
 elif algorithm == "casanovo":
     for instrument_file in folder:
         output_path = instrument_file.replace(f".{file_type}", ".mztab")
