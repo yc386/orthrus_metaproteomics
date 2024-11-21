@@ -12,3 +12,5 @@ dependencies:
       - mokapot
       - instanovo
       - casanovo
+      - pridepy
+      - pre_commit
