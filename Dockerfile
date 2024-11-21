@@ -26,4 +26,5 @@ RUN python -c "import instanovo;print(instanovo.__version__)"
 
 # The code to run when container is started:
 COPY orthrus_v1 orthrus_v1
+COPY Makefile Makefile
 # ENTRYPOINT ["conda", "run", "--no-capture-output", "-n", "orthrus", "python", "orthrus_v1/annotated_orthrus_pt1.py"]

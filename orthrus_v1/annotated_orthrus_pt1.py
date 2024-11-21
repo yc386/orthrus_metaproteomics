@@ -359,7 +359,8 @@ def process_all_csv_files(folder_path, database_path):
 
     for csv_filepath in csv_filepaths:
         print(f"🚀 Processing file: {csv_filepath}")
-        matching_ranking_to_fasta(csv_filepath, fasta_df)
+        filestem = os.path.splitext(csv_filepath)[0]
+        matching_ranking_to_fasta(csv_filepath, fasta_df, filestem)
 
 
 def process_all_files(folder_path, database_path, algorithm):
