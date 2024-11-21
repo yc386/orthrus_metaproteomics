@@ -1,0 +1,26 @@
+# yaml-language-server: $schema=https://instadeep.aichor.ai/schema/latest/manifest.schema.json
+kind: AIchorManifest
+apiVersion: 0.2.1
+builder:
+  image: orthrus
+  dockerfile: ./Dockerfile
+  context: .
+  buildArgs:
+    USE_CUDA: "true"
+spec:
+  operator: tf
+  image: orthrus
+  command: make download_data && make convert_data
+
+  types:
+    Worker:
+      count: 1
+      resources:
+        cpus: 32
+        ramRatio: 8 # >= 2
+
+        accelerators:
+          gpu:
+            count: 1
+            type: gpu # gpu, mig-1g.10gb, mig-3g.20gb, mig-3g.40gb
+            product: NVIDIA-A100-SXM4-80GB # NVIDIA-A100-SXM4-80GB NVIDIA-A100-SXM4-40GB
