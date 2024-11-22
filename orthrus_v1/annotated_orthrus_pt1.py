@@ -67,25 +67,7 @@ database_path = ""  # @param {type:"string"}
 # @title install dependencies & modules
 
 # %%time
-
-# !pip install biopython mokapot
-
-# if algorithm == "instanovo":
-#   # !pip install instanovo
-# elif algorithm == "casanovo":
-#   # !pip install casanovo
-# else:
-#   raise ValueError("Invalid algorithm name")
-
 import os
-
-# if not os.path.isfile("Orthrus_READY"):
-#   print("installing conda...")
-#   os.system("wget -qnc https://github.com/conda-forge/miniforge/releases/latest/download/Mambaforge-Linux-x86_64.sh")
-#   os.system("bash Mambaforge-Linux-x86_64.sh -bfp /usr/local")
-#   os.system("touch Orthrus_READY")
-#   os.system(f"conda install -c bioconda -c conda-forge sage-proteomics -y -q")
-
 
 import glob
 import pandas as pd

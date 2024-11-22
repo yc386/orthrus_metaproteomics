@@ -24,7 +24,7 @@ convert_raw_data_to_mzml:
 	done
 
 convert_raw_data_to_mzml_single_dir:
-	@subdir=/home/j-vangoey/code/orthrus_metaproteomics/data_original/PXD038906; \
+	@subdir=/home/j-vangoey/code/orthrus_metaproteomics/data/PXD038906; \
 	if [ -d $$subdir ]; then \
 		mzml_dir=$$subdir/mzML; \
 		mkdir -p $$mzml_dir; \
