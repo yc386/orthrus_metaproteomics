@@ -85,7 +85,7 @@ if os.getenv("COLAB_RELEASE_TAG"):
 # %%
 # @title Add inputs -> click `Runtime` -> `Run all`
 # @markdown **_De novo_ peptide sequencing algorithm inputs**
-algorithm = "instanovo"  # @param ["instanovo", "casanovo"]
+algorithm = "casanovo"  # @param ["instanovo", "casanovo"]
 # @markdown - use the drop-down menu to choose the de novo sequencing algorithm
 
 folder_path = "./data/PXD027613/mzML"  # @param {type:"string"}
@@ -370,8 +370,10 @@ def matching_ranking_to_fasta(denovo_df, fasta_df, filestem):
             secret=s3_secret_key,
         )
         bucket_path = f"{os.environ['AICHOR_OUTPUT_PATH']}{output_fasta_filepath}"
-        with s3.open(bucket_path, mode="w") as f:
-            f.write(open(output_path, "r").read())
+        with open(output_path, "r") as local_file, s3.open(
+            bucket_path, mode="w"
+        ) as bucket_file:
+            bucket_file.write(local_file.read())
         print(f" 🪣 Results uploaded to {bucket_path}")
 
 
@@ -420,7 +422,9 @@ folder = glob.glob(f"{folder_path}/*.{file_type}")
 
 
 if algorithm == "instanovo":
+    print("🔍 Running InstaNovo...")
     for instrument_file in folder:
+        print(f"🚀 Processing file: {instrument_file}")
         base, ext = instrument_file.rsplit(".", 1)
         output_path = f"{base}_{algorithm}.csv"
         if use_default:
@@ -440,7 +444,9 @@ if algorithm == "instanovo":
                     f"python -m instanovo.transformer.predict data_path={instrument_file} model_path={checkpoint} denovo=True output_path={output_path}"
                 )
 elif algorithm == "casanovo":
+    print("🔍 Running Casanovo...")
     for instrument_file in folder:
+        print(f"🚀 Processing file: {instrument_file}")
         base, ext = instrument_file.rsplit(".", 1)
         output_path = f"{base}_{algorithm}.mztab"
         if use_default:
@@ -462,8 +468,10 @@ if "AICHOR_OUTPUT_PATH" in os.environ:
         client_kwargs={"endpoint_url": s3_endpoint}, key=s3_key, secret=s3_secret_key
     )
     bucket_path = f"{os.environ['AICHOR_OUTPUT_PATH']}{output_path}"
-    with s3.open(bucket_path, mode="w") as f:
-        f.write(open(output_path, "r").read())
+    with open(output_path, "r") as local_file, s3.open(
+        bucket_path, mode="w"
+    ) as bucket_file:
+        bucket_file.write(local_file.read())
     print(f" 🪣 Results uploaded to {bucket_path}")
 
 # %%
