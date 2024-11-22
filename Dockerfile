@@ -11,6 +11,7 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         curl \
         make \
+        unzip \
     && \
     apt-get update -y && \
     apt-get clean && \
