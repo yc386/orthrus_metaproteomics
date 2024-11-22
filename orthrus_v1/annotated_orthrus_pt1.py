@@ -1,21 +1,7 @@
-# ---
-# jupyter:
-#   jupytext:
-#     formats: ipynb,py
-#     text_representation:
-#       extension: .py
-#       format_name: light
-#       format_version: '1.5'
-#       jupytext_version: 1.16.4
-#   kernelspec:
-#     display_name: Python 3
-#     name: python3
-# ---
-
-# + [markdown] colab_type="text" id="view-in-github"
+# %% [markdown]
 # <a href="https://colab.research.google.com/github/yc386/orthrus_metaproteomics/blob/main/annotated_orthrus_pt1_v1.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
 
-# + [markdown] id="VpisBTGyhi5v"
+# %% [markdown]
 # <img src='https://drive.google.com/uc?export=view&id=19rmmQI1H2nIqgU598WROTcUNhOUoXcBP' width='400px' align='right'>
 #
 # # **Readme**
@@ -29,16 +15,74 @@
 #
 # ---
 
-# + [markdown] id="Fva_FXk0htYl"
+# %% [markdown]
 # # **Please note**❗️
 # *   Before walking the dog, please change the runtime type to GPU (A100, L4, or T4. A100 most efficient but T4 is free)
 # *   If you would like to connect your Google Drive, click the folder image 🗂️ on the left and mount the drive.
 # *  Click `File` (top left) and save a copy in Drive or Github
 
-# + [markdown] id="-K0wYqUruZmx"
+# %% [markdown]
 # # Run `Orthrus`
 
-# + cellView="form" id="Cv26MhBMhbT5"
+# %%
+import os
+import subprocess
+
+
+def run_command(command: str):
+    """Runs a shell command and streams its output in real-time."""
+    process = subprocess.Popen(
+        command,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        shell=True,  # Enables the use of a string command
+        text=True,  # Ensures output is in string format
+    )
+
+    # Stream the output
+    while True:
+        output = process.stdout.readline()  # type: ignore
+        if output == "" and process.poll() is not None:
+            break
+        if output:
+            print(output.strip())
+
+    # Check for errors
+    stderr = process.stderr.read()  # type: ignore
+    if stderr:
+        print(f"Error: {stderr.strip()}")
+
+    # Return the exit code
+    return process.returncode
+
+
+if os.getenv("COLAB_RELEASE_TAG"):
+    print("Running in Colab")
+    run_command("pip install -q condacolab")
+    import condacolab
+
+    condacolab.install()
+    print(
+        "Your session has restarted. You can ignore the 'Your session crashed for an unknown reason' warning."
+    )
+else:
+    print("NOT running in Colab")
+    print("Adding 'orthrus' conda environment to notebook")
+    run_command("python -m ipykernel install --user --name=orthrus")
+
+# %% [markdown]
+# If running on Colab, please restart your runtime and run the cell below
+
+# %%
+import os
+import urllib.request
+
+if os.getenv("COLAB_RELEASE_TAG"):
+    url = "https://raw.githubusercontent.com/BioGeek/orthrus_metaproteomics/refs/heads/aichor/environment.yml"
+    urllib.request.urlretrieve(url, "environment.yml")
+    run_command("conda env update -n base -f environment.yml")
+
+# %%
 # @title Add inputs -> click `Runtime` -> `Run all`
 # @markdown **_De novo_ peptide sequencing algorithm inputs**
 algorithm = "instanovo"  # @param ["instanovo", "casanovo"]
@@ -63,11 +107,8 @@ use_SwissProt = True  # @param {type:"boolean"}
 database_path = ""  # @param {type:"string"}
 # @markdown - path to a database (`.fasta`) for shortlisting proteins based on de novo results
 
-# + cellView="form" colab={"base_uri": "https://localhost:8080/"} id="F9pGGlDUimMo" outputId="a8e81df3-8963-4180-d01e-6e99b37cbf75"
+# %%
 # @title install dependencies & modules
-
-# %%time
-import os
 
 import glob
 import pandas as pd
@@ -372,7 +413,7 @@ def process_all_files(folder_path, database_path, algorithm):
         raise ValueError("Invalid algorithm name")
 
 
-# +
+# %%
 # @title Run _de novo_ peptide sequencing algorithm
 
 folder = glob.glob(f"{folder_path}/*.{file_type}")
@@ -384,18 +425,18 @@ if algorithm == "instanovo":
         output_path = f"{base}_{algorithm}.csv"
         if use_default:
             if not os.path.isfile("instanovo_extended.ckpt"):
-                print("📥 Downloading InstaNovo checkpoint")
-                os.system(
+                print("⏬ Downloading InstaNovo checkpoint")
+                run_command(
                     "curl -LRO https://github.com/instadeepai/InstaNovo/releases/download/1.0.0/instanovo_extended.ckpt"
                 )
             if not os.path.isfile(output_path):
-                os.system(
+                run_command(
                     f"python -m instanovo.transformer.predict data_path={instrument_file} model_path='instanovo_extended.ckpt' denovo=True output_path={output_path}"
                 )
         else:
             # TODO add config
             if not os.path.isfile(output_path):
-                os.system(
+                run_command(
                     f"python -m instanovo.transformer.predict data_path={instrument_file} model_path={checkpoint} denovo=True output_path={output_path}"
                 )
 elif algorithm == "casanovo":
@@ -403,9 +444,9 @@ elif algorithm == "casanovo":
         base, ext = instrument_file.rsplit(".", 1)
         output_path = f"{base}_{algorithm}.mztab"
         if use_default:
-            os.system(f"casanovo sequence {instrument_file} -v info -o {output_path}")
+            run_command(f"casanovo sequence {instrument_file} -v info -o {output_path}")
         else:
-            os.system(
+            run_command(
                 f"casanovo sequence {instrument_file} -m {checkpoint} -c {config} -v info -o {output_path}"
             )
 else:
@@ -425,9 +466,8 @@ if "AICHOR_OUTPUT_PATH" in os.environ:
         f.write(open(output_path, "r").read())
     print(f" 🪣 Results uploaded to {bucket_path}")
 
-
-# + cellView="form" colab={"base_uri": "https://localhost:8080/"} id="CvDZIzfwrxbc" outputId="5114c954-2520-4fa8-e909-555fb99cf97f"
-# @title Convert `Casanovo` results to .fasta per experiment
+# %%
+# @title Convert de novo results to .fasta per experiment
 
 if use_SwissProt:
     url = "https://ftp.uniprot.org/pub/databases/uniprot/knowledgebase/complete/uniprot_sprot.fasta.gz"
