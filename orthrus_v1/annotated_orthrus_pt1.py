@@ -384,6 +384,7 @@ if algorithm == "instanovo":
         output_path = f"{base}_{algorithm}.csv"
         if use_default:
             if not os.path.isfile("instanovo_extended.ckpt"):
+                print("📥 Downloading InstaNovo checkpoint")
                 os.system(
                     "curl -LRO https://github.com/instadeepai/InstaNovo/releases/download/1.0.0/instanovo_extended.ckpt"
                 )

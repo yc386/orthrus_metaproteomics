@@ -6,8 +6,8 @@ ENDPOINT=--endpoint=http://storage.googleapis.com
 download_raw_data:
 	# mkdir -p ./data/PXD038906 # modern human coprolite spectra && \
 	mkdir -p ./data/PXD027613 # ancient human coprolite spectra && \
-	# conda run -n orthrus pridepy download-all-public-raw-files -a PXD038906 -o ./data/PXD038906 -p aspera && \
-	conda run -n orthrus pridepy download-all-public-raw-files -a PXD027613 -o ./data/PXD027613 -p aspera
+	# conda run -n orthrus --live-stream pridepy download-all-public-raw-files -a PXD038906 -o ./data/PXD038906 -p aspera && \
+	conda run -n orthrus --live-stream pridepy download-all-public-raw-files -a PXD027613 -o ./data/PXD027613 -p aspera
 
 convert_raw_data_to_mzml:
 	@for subdir in $(DATA_DIR)/*; do \
@@ -50,4 +50,4 @@ download_mzml_to_local:
 	aws s3 cp s3://orthrus-meta-1b449aad01564a89-inputs/PXD027613/20210408-Paleofeces-2604-01.mzML ./data/PXD027613/mzML
 
 run_part1:
-	conda run -n orthrus python orthrus_v1/annotated_orthrus_pt1.py
+	conda run -n orthrus --live-stream python orthrus_v1/annotated_orthrus_pt1.py
