@@ -7,7 +7,7 @@
 # # **Readme**
 #
 # ---
-# Orthrus 🐾 is a hybrid, two-software pipeline that integrates [Casanovo](https://github.com/Noble-Lab/casanovo) (an AI transformer) with [Sage](https://github.com/lazear/sage) (a fast database search engine with advanced features like retention time alignment and machine learning-based rescoring).
+# Orthrus 🐾 is a hybrid, two-software pipeline that integrates de novo peptide sequencing (you have the choice between [InstaNovo](https://github.com/instadeepai/instanovo) and [Casanovo](https://github.com/Noble-Lab/casanovo)) with [Sage](https://github.com/lazear/sage) (a fast database search engine with advanced features like retention time alignment and machine learning-based rescoring).
 #
 # Designed to handle large search space and difficulties of selecting databases in metaproteomics and palaeoproteomics, Orthrus leverages de novo sequencing to define sample-specific databases, and uses probability ranking and conventional database searching to control FDRs (false discovery rates).
 #
