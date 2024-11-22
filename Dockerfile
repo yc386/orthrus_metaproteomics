@@ -26,10 +26,6 @@ RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2
 # Make RUN commands use the new environment:
 SHELL ["conda", "run", "-n", "orthrus", "/bin/bash", "-c"]
 
-# Demonstrate the environment is activated:
-RUN echo "Make sure instanovo is installed:"
-RUN python -c "import instanovo;print(instanovo.__version__)"
-
 # The code to run when container is started:
 COPY orthrus_v1 orthrus_v1
 COPY Makefile Makefile

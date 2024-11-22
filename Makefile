@@ -47,7 +47,7 @@ upload/%:
 
 download_mzml_to_local:
 	mkdir -p ./data/PXD027613/mzML && \
-	aws s3 cp orthrus-meta-1b449aad01564a89-inputs/PXD027613/20210408-Paleofeces-2604-01.mzML ./data/PXD027613/mzML
+	aws s3 cp s3://orthrus-meta-1b449aad01564a89-inputs/PXD027613/20210408-Paleofeces-2604-01.mzML ./data/PXD027613/mzML
 
 run_part1:
 	conda run -n orthrus python orthrus_v1/annotated_orthrus_pt1.py
