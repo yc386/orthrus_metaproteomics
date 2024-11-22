@@ -85,7 +85,7 @@ if os.getenv("COLAB_RELEASE_TAG"):
 # %%
 # @title Add inputs -> click `Runtime` -> `Run all`
 # @markdown **_De novo_ peptide sequencing algorithm inputs**
-algorithm = "casanovo"  # @param ["instanovo", "casanovo"]
+algorithm = "instanovo"  # @param ["instanovo", "casanovo"]
 # @markdown - use the drop-down menu to choose the de novo sequencing algorithm
 
 folder_path = "./data/PXD027613/mzML"  # @param {type:"string"}
@@ -339,6 +339,26 @@ def matching_ranking_to_fasta_csv(csv_path, fasta_df):
     return matching_ranking_to_fasta(denovo_df, fasta_df, filestem)
 
 
+def upload_to_bucket(output_path):
+    """Upload results to a bucket."""
+    # Only applicable when running on on https://aichor.ai/
+    if "AICHOR_OUTPUT_PATH" in os.environ:
+        s3_endpoint = "https://storage.googleapis.com"  # os.environ["S3_ENDPOINT"]
+        s3_key = os.environ["AWS_ACCESS_KEY_ID"]
+        s3_secret_key = os.environ["AWS_SECRET_ACCESS_KEY"]
+        s3 = s3fs.S3FileSystem(
+            client_kwargs={"endpoint_url": s3_endpoint},
+            key=s3_key,
+            secret=s3_secret_key,
+        )
+        bucket_path = f"{os.environ['AICHOR_OUTPUT_PATH']}{output_path}"
+        with open(output_path, "r") as local_file, s3.open(
+            bucket_path, mode="w"
+        ) as bucket_file:
+            bucket_file.write(local_file.read())
+        print(f" 🪣 Results uploaded to {bucket_path}")
+
+
 def matching_ranking_to_fasta(denovo_df, fasta_df, filestem):
     """Generate a fasta file based on the matched proteins."""
     k = int(denovo_df["nAA"].median())
@@ -357,24 +377,7 @@ def matching_ranking_to_fasta(denovo_df, fasta_df, filestem):
     with open(output_fasta_filepath, "w") as output_file:
         SeqIO.write(seq_records, output_file, "fasta")
     print(f"🎊 Number of protein entries in the output fasta: {m1.shape[0]}")
-
-    # Only applicable when running on on https://aichor.ai/
-    if "AICHOR_OUTPUT_PATH" in os.environ:
-        # Upload results to bucket
-        s3_endpoint = os.environ["S3_ENDPOINT"]
-        s3_key = os.environ["AWS_ACCESS_KEY_ID"]
-        s3_secret_key = os.environ["AWS_SECRET_ACCESS_KEY"]
-        s3 = s3fs.S3FileSystem(
-            client_kwargs={"endpoint_url": s3_endpoint},
-            key=s3_key,
-            secret=s3_secret_key,
-        )
-        bucket_path = f"{os.environ['AICHOR_OUTPUT_PATH']}{output_fasta_filepath}"
-        with open(output_path, "r") as local_file, s3.open(
-            bucket_path, mode="w"
-        ) as bucket_file:
-            bucket_file.write(local_file.read())
-        print(f" 🪣 Results uploaded to {bucket_path}")
+    upload_to_bucket(output_fasta_filepath)
 
 
 # generate a de novo-first, experiment-specific .fasta for each input
@@ -457,22 +460,8 @@ elif algorithm == "casanovo":
             )
 else:
     raise ValueError("Invalid algorithm name")
+upload_to_bucket(output_path)
 
-# Only applicable when running on on https://aichor.ai/
-if "AICHOR_OUTPUT_PATH" in os.environ:
-    # Upload results to bucket
-    s3_endpoint = os.environ["S3_ENDPOINT"]
-    s3_key = os.environ["AWS_ACCESS_KEY_ID"]
-    s3_secret_key = os.environ["AWS_SECRET_ACCESS_KEY"]
-    s3 = s3fs.S3FileSystem(
-        client_kwargs={"endpoint_url": s3_endpoint}, key=s3_key, secret=s3_secret_key
-    )
-    bucket_path = f"{os.environ['AICHOR_OUTPUT_PATH']}{output_path}"
-    with open(output_path, "r") as local_file, s3.open(
-        bucket_path, mode="w"
-    ) as bucket_file:
-        bucket_file.write(local_file.read())
-    print(f" 🪣 Results uploaded to {bucket_path}")
 
 # %%
 # @title Convert de novo results to .fasta per experiment
