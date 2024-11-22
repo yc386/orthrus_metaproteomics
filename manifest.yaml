@@ -10,7 +10,7 @@ builder:
 spec:
   operator: tf
   image: orthrus
-  command: make download_data && make convert_data && run_part1
+  command: make download_mzml_to_local  && run_part1
 
   types:
     Worker:

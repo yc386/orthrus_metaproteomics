@@ -16,6 +16,11 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/{apt,dpkg,cache,log}
 
+# Install AWS CLI
+RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && \
+    unzip awscliv2.zip && \
+    ./aws/install && \
+    rm -rf awscliv2.zip aws
 
 # Make RUN commands use the new environment:
 SHELL ["conda", "run", "-n", "orthrus", "/bin/bash", "-c"]

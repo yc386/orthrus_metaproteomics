@@ -44,7 +44,7 @@
 algorithm = "instanovo"  # @param ["instanovo", "casanovo"]
 # @markdown - use the drop-down menu to choose the de novo sequencing algorithm
 
-folder_path = "./data/PXD027613"  # @param {type:"string"}
+folder_path = "./data/PXD027613/mzML"  # @param {type:"string"}
 # @markdown - a folder contains single or multiple `.mzML` or `.mgf` files for the de novo sequencing algorithm (`Instanovo` or `Casanovo`). Please check only _ (underscore) and no other special characters or space in a file name.
 file_type = "mzML"  # @param ["mzML", "mgf"]
 # @markdown - use the drop-down menu to choose the instrument file type
@@ -102,7 +102,7 @@ from Bio import SeqIO
 import requests
 import gzip
 import shutil
-
+import s3fs
 
 pattern = re.compile(r"(.\d*\.?\d+)")
 
@@ -329,11 +329,27 @@ def matching_ranking_to_fasta(denovo_df, fasta_df, filestem):
         seq_record = SeqRecord(sequence, id=header_id, description=description)
         seq_records.append(seq_record)
 
-    output_fasta_filepath = f"{filestem}._matched.fasta"
+    output_fasta_filepath = f"{filestem}_matched.fasta"
 
     with open(output_fasta_filepath, "w") as output_file:
         SeqIO.write(seq_records, output_file, "fasta")
     print(f"🎊 Number of protein entries in the output fasta: {m1.shape[0]}")
+
+    # Only applicable when running on on https://aichor.ai/
+    if "AICHOR_OUTPUT_PATH" in os.environ:
+        # Upload results to bucket
+        s3_endpoint = os.environ["S3_ENDPOINT"]
+        s3_key = os.environ["AWS_ACCESS_KEY_ID"]
+        s3_secret_key = os.environ["AWS_SECRET_ACCESS_KEY"]
+        s3 = s3fs.S3FileSystem(
+            client_kwargs={"endpoint_url": s3_endpoint},
+            key=s3_key,
+            secret=s3_secret_key,
+        )
+        bucket_path = f"{os.environ['AICHOR_OUTPUT_PATH']}{output_fasta_filepath}"
+        with s3.open(bucket_path, mode="w") as f:
+            f.write(open(output_path, "r").read())
+        print(f" 🪣 Results uploaded to {bucket_path}")
 
 
 # generate a de novo-first, experiment-specific .fasta for each input
@@ -379,9 +395,11 @@ def process_all_files(folder_path, database_path, algorithm):
 
 folder = glob.glob(f"{folder_path}/*.{file_type}")
 
+
 if algorithm == "instanovo":
     for instrument_file in folder:
-        output_path = instrument_file.replace(f".{file_type}", ".csv")
+        base, ext = instrument_file.rsplit(".", 1)
+        output_path = f"{base}_{algorithm}.csv"
         if use_default:
             if not os.path.isfile("instanovo_extended.ckpt"):
                 os.system(
@@ -399,13 +417,31 @@ if algorithm == "instanovo":
                 )
 elif algorithm == "casanovo":
     for instrument_file in folder:
-        output_path = instrument_file.replace(f".{file_type}", ".mztab")
+        base, ext = instrument_file.rsplit(".", 1)
+        output_path = f"{base}_{algorithm}.mztab"
         if use_default:
             os.system(f"casanovo sequence {instrument_file} -v info -o {output_path}")
         else:
             os.system(
                 f"casanovo sequence {instrument_file} -m {checkpoint} -c {config} -v info -o {output_path}"
             )
+else:
+    raise ValueError("Invalid algorithm name")
+
+# Only applicable when running on on https://aichor.ai/
+if "AICHOR_OUTPUT_PATH" in os.environ:
+    # Upload results to bucket
+    s3_endpoint = os.environ["S3_ENDPOINT"]
+    s3_key = os.environ["AWS_ACCESS_KEY_ID"]
+    s3_secret_key = os.environ["AWS_SECRET_ACCESS_KEY"]
+    s3 = s3fs.S3FileSystem(
+        client_kwargs={"endpoint_url": s3_endpoint}, key=s3_key, secret=s3_secret_key
+    )
+    bucket_path = f"{os.environ['AICHOR_OUTPUT_PATH']}{output_path}"
+    with s3.open(bucket_path, mode="w") as f:
+        f.write(open(output_path, "r").read())
+    print(f" 🪣 Results uploaded to {bucket_path}")
+
 
 # + cellView="form" colab={"base_uri": "https://localhost:8080/"} id="CvDZIzfwrxbc" outputId="5114c954-2520-4fa8-e909-555fb99cf97f"
 # @title Convert `Casanovo` results to .fasta per experiment
@@ -431,3 +467,5 @@ if use_SwissProt:
 
 else:
     process_all_files(folder_path, database_path, algorithm)
+
+# %%
