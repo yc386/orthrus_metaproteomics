@@ -126,11 +126,6 @@ import requests
 import gzip
 import shutil
 import s3fs
-import logging
-import sys
-
-os.environ["S3FS_LOGGING_LEVEL"] = "DEBUG"
-logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
 pattern = re.compile(r"(.\d*\.?\d+)")
 
@@ -356,12 +351,6 @@ def upload_to_bucket(output_path):
             key=s3_key,
             secret=s3_secret_key,
         )
-
-        # Zip the file before uploading
-        # zip_path = f"{output_path}.zip"
-        # with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as zipf:
-        #     zipf.write(output_path, arcname=os.path.basename(output_path))
-
         bucket_path = (
             f"{os.environ['AICHOR_OUTPUT_PATH']}{os.path.basename(output_path)}"
         )
