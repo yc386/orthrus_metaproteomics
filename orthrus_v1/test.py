@@ -1,7 +1,10 @@
 import os
 import s3fs
+import logging
+import sys
 
 os.environ["S3FS_LOGGING_LEVEL"] = "DEBUG"
+logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
 
 def upload_to_bucket(output_path):
@@ -39,6 +42,7 @@ def write_large_file(filename, num_lines=1_000_000):
     print(f"File '{filename}' written with size: {file_size_gb:.2f} GB")
 
 
-for i in range(4, 10):
-    write_large_file(f"large_file_{10 ** i}.txt", num_lines=10**i)
-    upload_to_bucket(f"large_file_{10 ** i}.txt")
+for i in range(1, 6):
+    num_lines = 10 * i
+    write_large_file(f"large_file_{num_lines}.txt", num_lines=num_lines)
+    upload_to_bucket(f"large_file_{num_lines}.txt")
