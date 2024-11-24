@@ -25,8 +25,6 @@ def upload_to_bucket(output_path):
         ) as bucket_file:
             bucket_file.write(local_file.read())
         print(f" 🪣 Results uploaded to {bucket_path}")
-        out = s3.list_multipart_uploads(os.environ["AICHOR_OUTPUT_PATH"])
-        print(f"Multipart uploads: {out}")
     else:
         print(" 🪣 Results not uploaded. Not running on AIchor.")
 
