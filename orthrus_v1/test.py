@@ -25,6 +25,8 @@ def upload_to_bucket(output_path):
         ) as bucket_file:
             bucket_file.write(local_file.read())
         print(f" 🪣 Results uploaded to {bucket_path}")
+        out = s3.list_multipart_uploads(os.environ["AICHOR_OUTPUT_PATH"])
+        print(f"Multipart uploads: {out}")
     else:
         print(" 🪣 Results not uploaded. Not running on AIchor.")
 
@@ -43,6 +45,6 @@ def write_large_file(filename, num_lines=1_000_000):
 
 
 for i in range(1, 6):
-    num_lines = 10 * i
+    num_lines = 10**i
     write_large_file(f"large_file_{num_lines}.txt", num_lines=num_lines)
     upload_to_bucket(f"large_file_{num_lines}.txt")
