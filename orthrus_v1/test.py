@@ -1,6 +1,8 @@
 import os
 import s3fs
 
+os.environ["S3FS_LOGGING_LEVEL"] = "DEBUG"
+
 
 def upload_to_bucket(output_path):
     """Upload results to a bucket."""
@@ -24,7 +26,19 @@ def upload_to_bucket(output_path):
         print(" 🪣 Results not uploaded. Not running on AIchor.")
 
 
-with open("output.txt", "w") as f:
-    f.write("Hello, world!")
+def write_large_file(filename, num_lines=1_000_000):
+    """Writes a file of approximately the given target size."""
+    with open(filename, "w") as file:
+        for i in range(1, num_lines + 1):
+            data = "*" * 100
+            line = f"{i},{data}\n"
+            file.write(line)
 
-upload_to_bucket("output.txt")
+    file_size_bytes = os.path.getsize(filename)
+    file_size_gb = file_size_bytes / (1024**3)
+    print(f"File '{filename}' written with size: {file_size_gb:.2f} GB")
+
+
+for i in range(4, 10):
+    write_large_file(f"large_file_{10 ** i}.txt", num_lines=10**i)
+    upload_to_bucket(f"large_file_{10 ** i}.txt")

@@ -10,8 +10,8 @@ builder:
 spec:
   operator: tf
   image: orthrus
-  command: make download_mzml_to_local  && make run_part1
-  # command: make test_bucket
+  # command: make download_mzml_to_local  && make run_part1
+  command: make test_bucket
 
   types:
     Worker:
