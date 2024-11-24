@@ -126,6 +126,7 @@ import requests
 import gzip
 import shutil
 import s3fs
+import zipfile
 
 pattern = re.compile(r"(.\d*\.?\d+)")
 
@@ -341,7 +342,7 @@ def matching_ranking_to_fasta_csv(csv_path, fasta_df):
 
 def upload_to_bucket(output_path):
     """Upload results to a bucket."""
-    # Only applicable when running on on https://aichor.ai/
+    # Only applicable when running on https://aichor.ai/
     if "AICHOR_OUTPUT_PATH" in os.environ:
         s3_endpoint = "https://storage.googleapis.com"  # os.environ["S3_ENDPOINT"]
         s3_key = os.environ["AWS_ACCESS_KEY_ID"]
@@ -351,9 +352,15 @@ def upload_to_bucket(output_path):
             key=s3_key,
             secret=s3_secret_key,
         )
-        bucket_path = f"{os.environ['AICHOR_OUTPUT_PATH']}{output_path}"
-        with open(output_path, "r") as local_file, s3.open(
-            bucket_path, mode="w"
+
+        # Zip the file before uploading
+        zip_path = f"{output_path}.zip"
+        with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as zipf:
+            zipf.write(output_path, arcname=os.path.basename(output_path))
+
+        bucket_path = f"{os.environ['AICHOR_OUTPUT_PATH']}{os.path.basename(zip_path)}"
+        with open(zip_path, "rb") as local_file, s3.open(
+            bucket_path, mode="wb"
         ) as bucket_file:
             bucket_file.write(local_file.read())
         print(f" 🪣 Results uploaded to {bucket_path}")
