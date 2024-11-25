@@ -55,14 +55,14 @@ repos:
     hooks:
       - id: nbstripout
 
-  - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.6.9
-    hooks:
-      # Run the linter.
-      - id: ruff
-        args: [--fix, --ignore=E402, --ignore=E262, --ignore=E265]
-      # Run the formatter.
-      - id: ruff-format
+#   - repo: https://github.com/astral-sh/ruff-pre-commit
+#     rev: v0.6.9
+#     hooks:
+#       # Run the linter.
+#       - id: ruff
+#         args: [--fix, --ignore=E402, --ignore=E262, --ignore=E265]
+#       # Run the formatter.
+#       - id: ruff-format
 
   - repo: https://github.com/pre-commit/mirrors-mypy
     rev: 'v1.11.2'

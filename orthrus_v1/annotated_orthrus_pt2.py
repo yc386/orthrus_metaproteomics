@@ -7,43 +7,43 @@
 # Please note: change to **TPU** runtime if RAM usage is expected to be high (due to files/PTMs/databases)
 
 # %%
-# @title Add inputs for `SAGE` -> click `Runtime` -> `Run all`
+#@title Add inputs for `SAGE` -> click `Runtime` -> `Run all`
 
-# @markdown **Parameters for `SAGE`**
-peak_folder = "data/PXD027613/mzML"  # @param {type:"string"}
-file_type = "mzML"  # @param ["mzML", "mgf"]
-# @markdown - use the drop-down menu to choose the instrument file type
+#@markdown **Parameters for `SAGE`**
+peak_folder = "data/PXD027613/mzML"  #@param {type:"string"}
+file_type = "mzML"  #@param ["mzML", "mgf"]
+#@markdown - use the drop-down menu to choose the instrument file type
 
-# @markdown **_De novo_ peptide sequencing algorithm**
-algorithm = "instanovo"  # @param ["instanovo", "casanovo"]
+#@markdown **_De novo_ peptide sequencing algorithm**
+algorithm = "instanovo"  #@param ["instanovo", "casanovo"]
 
-# @markdown **Option 1: `SAGE` PTM plus**
-# @markdown - Default `Sage` contains
-use_PTM_plus = True  # @param {type:"boolean"}
-max_variable_mods = 3  # @param {type:"number"}
-missed_cleavages = 2  # @param {type:"number"}
-AA_1 = "M"  # @param ["None", "[","]","A", "C", "D", "E", "F", "G", "H", "I", "K", "L", "M", "N", "P", "Q", "R", "S", "T", "V", "W", "Y"]
-AA_1_mod = 15.9949  # @param {type:"number"}
-AA_2 = "P"  # @param ["None", "[","]","A", "C", "D", "E", "F", "G", "H", "I", "K", "L", "M", "N", "P", "Q", "R", "S", "T", "V", "W", "Y"]
-AA_2_mod = 15.9949  # @param {type:"number"}
-AA_3 = "N"  # @param ["None", "[","]","A", "C", "D", "E", "F", "G", "H", "I", "K", "L", "M", "N", "P", "Q", "R", "S", "T", "V", "W", "Y"]
-AA_3_mod = 0.984016  # @param {type:"number"}
-AA_4 = "Q"  # @param ["None", "[","]","A", "C", "D", "E", "F", "G", "H", "I", "K", "L", "M", "N", "P", "Q", "R", "S", "T", "V", "W", "Y"]
-AA_4_mod = 0.984016  # @param {type:"number"}
-AA_5 = "None"  # @param ["None", "[","]","A", "C", "D", "E", "F", "G", "H", "I", "K", "L", "M", "N", "P", "Q", "R", "S", "T", "V", "W", "Y"]
-# @markdown - [ = n-terminal
-AA_5_mod = 42.010565  # @param {type:"number"}
+#@markdown **Option 1: `SAGE` PTM plus**
+#@markdown - Default `Sage` contains
+use_PTM_plus = True  #@param {type:"boolean"}
+max_variable_mods = 3  #@param {type:"number"}
+missed_cleavages = 2  #@param {type:"number"}
+AA_1 = "M"  #@param ["None", "[","]","A", "C", "D", "E", "F", "G", "H", "I", "K", "L", "M", "N", "P", "Q", "R", "S", "T", "V", "W", "Y"]
+AA_1_mod = 15.9949  #@param {type:"number"}
+AA_2 = "P"  #@param ["None", "[","]","A", "C", "D", "E", "F", "G", "H", "I", "K", "L", "M", "N", "P", "Q", "R", "S", "T", "V", "W", "Y"]
+AA_2_mod = 15.9949  #@param {type:"number"}
+AA_3 = "N"  #@param ["None", "[","]","A", "C", "D", "E", "F", "G", "H", "I", "K", "L", "M", "N", "P", "Q", "R", "S", "T", "V", "W", "Y"]
+AA_3_mod = 0.984016  #@param {type:"number"}
+AA_4 = "Q"  #@param ["None", "[","]","A", "C", "D", "E", "F", "G", "H", "I", "K", "L", "M", "N", "P", "Q", "R", "S", "T", "V", "W", "Y"]
+AA_4_mod = 0.984016  #@param {type:"number"}
+AA_5 = "None"  #@param ["None", "[","]","A", "C", "D", "E", "F", "G", "H", "I", "K", "L", "M", "N", "P", "Q", "R", "S", "T", "V", "W", "Y"]
+#@markdown - [ = n-terminal
+AA_5_mod = 42.010565  #@param {type:"number"}
 
-# @markdown **Option 2: `Mokapot` rescoring**
-use_Mokapot = True  # @param {type:"boolean"}
-# @markdown - machine learning-based rescoring per experiment or across experiments
-joint_modelling = False  # @param {type:"boolean"}
-# @markdown - a joint model for low abundance samples
-default_Percolator = False  # @param {type:"boolean"}
-# @markdown - Python implementation of the Percolator SVM model
+#@markdown **Option 2: `Mokapot` rescoring**
+use_Mokapot = True  #@param {type:"boolean"}
+#@markdown - machine learning-based rescoring per experiment or across experiments
+joint_modelling = False  #@param {type:"boolean"}
+#@markdown - a joint model for low abundance samples
+default_Percolator = False  #@param {type:"boolean"}
+#@markdown - Python implementation of the Percolator SVM model
 
 # %%
-# @title install dependencies
+#@title install dependencies
 
 import os
 import shutil
@@ -156,7 +156,7 @@ def get_sage_config(
 
 
 # %%
-# @title Run Sage
+#@title Run Sage
 
 organise_files(peak_folder, algorithm)
 folder_path = peak_folder
@@ -231,7 +231,7 @@ else:
         )
 
 # %%
-# @title Brew Mokapot
+#@title Brew Mokapot
 
 import mokapot
 from xgboost import XGBClassifier
