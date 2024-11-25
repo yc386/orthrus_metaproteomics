@@ -84,32 +84,32 @@ if os.getenv("COLAB_RELEASE_TAG"):
     run_command("conda env update -n base -f environment.yml")
 
 # %%
-# @title Add inputs -> click `Runtime` -> `Run all`
-# @markdown **_De novo_ peptide sequencing algorithm inputs**
-algorithm = "instanovo"  # @param ["instanovo", "casanovo"]
-# @markdown - use the drop-down menu to choose the de novo sequencing algorithm
+#@title Add inputs -> click `Runtime` -> `Run all`
+#@markdown **_De novo_ peptide sequencing algorithm inputs**
+algorithm = "instanovo"  #@param ["instanovo", "casanovo"]
+#@markdown - use the drop-down menu to choose the de novo sequencing algorithm
 
-folder_path = "./data/PXD027613/mzML"  # @param {type:"string"}
-# @markdown - a folder contains single or multiple `.mzML` or `.mgf` files for the de novo sequencing algorithm (`Instanovo` or `Casanovo`). Please check only _ (underscore) and no other special characters or space in a file name.
-file_type = "mzML"  # @param ["mzML", "mgf"]
-# @markdown - use the drop-down menu to choose the instrument file type
+folder_path = "./data/PXD027613/mzML"  #@param {type:"string"}
+#@markdown - a folder contains single or multiple `.mzML` or `.mgf` files for the de novo sequencing algorithm (`Instanovo` or `Casanovo`). Please check only _ (underscore) and no other special characters or space in a file name.
+file_type = "mzML"  #@param ["mzML", "mgf"]
+#@markdown - use the drop-down menu to choose the instrument file type
 
-use_default = True  # @param {type:"boolean"}
-# @markdown **Advanced Options (ignored if using default settings)**
+use_default = True  #@param {type:"boolean"}
+#@markdown **Advanced Options (ignored if using default settings)**
 
-checkpoint = "path/to/model.ckpt"  # @param {type:"string"}
-# @markdown - path to a checkpoint `.ckpt` for a de novo peptide sequencing model
-config = "path/to/config.yaml"  # @param {type:"string"}
-# @markdown - a `.yaml` configuration file for Casanovo
+checkpoint = "path/to/model.ckpt"  #@param {type:"string"}
+#@markdown - path to a checkpoint `.ckpt` for a de novo peptide sequencing model
+config = "path/to/config.yaml"  #@param {type:"string"}
+#@markdown - a `.yaml` configuration file for Casanovo
 
-# @markdown **Inputs for converting Casanovo results to a `.fasta`**
-use_SwissProt = True  # @param {type:"boolean"}
-# @markdown - use the latest, reviewed SwissProt form the UniProt FTP
-database_path = ""  # @param {type:"string"}
-# @markdown - path to a database (`.fasta`) for shortlisting proteins based on de novo results
+#@markdown **Inputs for converting Casanovo results to a `.fasta`**
+use_SwissProt = True  #@param {type:"boolean"}
+#@markdown - use the latest, reviewed SwissProt form the UniProt FTP
+database_path = ""  #@param {type:"string"}
+#@markdown - path to a database (`.fasta`) for shortlisting proteins based on de novo results
 
 # %%
-# @title install dependencies & modules
+#@title install dependencies & modules
 
 import glob
 import pandas as pd
@@ -422,7 +422,7 @@ def process_all_files(folder_path, database_path, algorithm):
 
 
 # %%
-# @title Run _de novo_ peptide sequencing algorithm
+#@title Run _de novo_ peptide sequencing algorithm
 
 folder = glob.glob(f"{folder_path}/*.{file_type}")
 
@@ -467,7 +467,7 @@ upload_to_bucket(output_path)
 
 
 # %%
-# @title Convert de novo results to .fasta per experiment
+#@title Convert de novo results to .fasta per experiment
 
 if use_SwissProt:
     url = "https://ftp.uniprot.org/pub/databases/uniprot/knowledgebase/complete/uniprot_sprot.fasta.gz"
