@@ -79,7 +79,7 @@ import urllib.request
 
 if os.getenv("COLAB_RELEASE_TAG"):
     # TODO: update this  to the correct repository and branch once merged
-    url = "https://raw.githubusercontent.com/BioGeek/orthrus_metaproteomics/refs/heads/aichor/environment.yml"
+    url = "https://raw.githubusercontent.com/BioGeek/orthrus_metaproteomics/refs/heads/instanovo/environment.yml"
     urllib.request.urlretrieve(url, "environment.yml")
     run_command("conda env update -n base -f environment.yml")
 
@@ -126,7 +126,6 @@ from Bio import SeqIO
 import requests
 import gzip
 import shutil
-import s3fs
 
 pattern = re.compile(r"(.\d*\.?\d+)")
 
@@ -340,28 +339,6 @@ def matching_ranking_to_fasta_csv(csv_path, fasta_df):
     return matching_ranking_to_fasta(denovo_df, fasta_df, filestem)
 
 
-def upload_to_bucket(output_path):
-    """Upload results to a bucket."""
-    # Only applicable when running on https://aichor.ai/
-    if "AICHOR_OUTPUT_PATH" in os.environ:
-        s3_endpoint = "https://storage.googleapis.com"  # os.environ["S3_ENDPOINT"]
-        s3_key = os.environ["AWS_ACCESS_KEY_ID"]
-        s3_secret_key = os.environ["AWS_SECRET_ACCESS_KEY"]
-        s3 = s3fs.S3FileSystem(
-            client_kwargs={"endpoint_url": s3_endpoint},
-            key=s3_key,
-            secret=s3_secret_key,
-        )
-        bucket_path = (
-            f"{os.environ['AICHOR_OUTPUT_PATH']}{os.path.basename(output_path)}"
-        )
-        with open(output_path, "r") as local_file, s3.open(
-            bucket_path, mode="w"
-        ) as bucket_file:
-            bucket_file.write(local_file.read())
-        print(f" 🪣 Results uploaded to {bucket_path}")
-
-
 def matching_ranking_to_fasta(denovo_df, fasta_df, filestem):
     """Generate a fasta file based on the matched proteins."""
     k = int(denovo_df["nAA"].median())
@@ -380,7 +357,6 @@ def matching_ranking_to_fasta(denovo_df, fasta_df, filestem):
     with open(output_fasta_filepath, "w") as output_file:
         SeqIO.write(seq_records, output_file, "fasta")
     print(f"🎊 Number of protein entries in the output fasta: {m1.shape[0]}")
-    upload_to_bucket(output_fasta_filepath)
 
 
 # generate a de novo-first, experiment-specific .fasta for each input
@@ -463,8 +439,6 @@ elif algorithm == "casanovo":
             )
 else:
     raise ValueError("Invalid algorithm name")
-upload_to_bucket(output_path)
-
 
 # %%
 # @title Convert de novo results to .fasta per experiment
