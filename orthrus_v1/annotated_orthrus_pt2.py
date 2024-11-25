@@ -10,7 +10,7 @@
 # @title Add inputs for `SAGE` -> click `Runtime` -> `Run all`
 
 # @markdown **Parameters for `SAGE`**
-peak_folder = "test_data/PXD027613/mzML"  # @param {type:"string"}
+peak_folder = "data/PXD027613/mzML"  # @param {type:"string"}
 file_type = "mzML"  # @param ["mzML", "mgf"]
 # @markdown - use the drop-down menu to choose the instrument file type
 
@@ -48,6 +48,8 @@ default_Percolator = False  # @param {type:"boolean"}
 import os
 import shutil
 import subprocess
+import glob
+import json
 
 
 def run_command(command: str):
@@ -155,9 +157,6 @@ def get_sage_config(
 
 # %%
 # @title Run Sage
-import glob
-import json
-
 
 organise_files(peak_folder, algorithm)
 folder_path = peak_folder

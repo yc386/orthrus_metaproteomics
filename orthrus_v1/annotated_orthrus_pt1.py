@@ -78,6 +78,7 @@ import os
 import urllib.request
 
 if os.getenv("COLAB_RELEASE_TAG"):
+    # TODO: update this  to the correct repository and branch once merged
     url = "https://raw.githubusercontent.com/BioGeek/orthrus_metaproteomics/refs/heads/aichor/environment.yml"
     urllib.request.urlretrieve(url, "environment.yml")
     run_command("conda env update -n base -f environment.yml")
