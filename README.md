@@ -4,7 +4,7 @@
 
 ## Quick start
 - Go to orthrus_v1 folder and choose to open .ipynb files in Colab
-- A Github account will be needed for authorisation. Go to [Github](https://github.com/) and get one if you haven't >_< 
+- A Github account will be needed for authorisation. Go to [Github](https://github.com/) and get one if you haven't >_<
 
 ## Documentation
 - under construction but please see Notebooks' annotations

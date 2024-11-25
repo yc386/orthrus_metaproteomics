@@ -6,7 +6,7 @@ repos:
         args:
           - --max-line-length=100
           - --max-cognitive-complexity=15
-          - --ignore=E203,E266,E501,W503,F722,E402,N816,C401,N802,N806,E402
+          - --ignore=E203,E266,E501,W503,F722,E402,N816,C401,N802,N806,E402,E265,E262
         additional_dependencies:
           - pep8-naming==0.13.3
           - flake8-absolute-import==1.0.0.1
@@ -60,7 +60,7 @@ repos:
     hooks:
       # Run the linter.
       - id: ruff
-        args: [--fix, --ignore, E402]
+        args: [--fix, --ignore=E402, --ignore=E262, --ignore=E265]
       # Run the formatter.
       - id: ruff-format
 
