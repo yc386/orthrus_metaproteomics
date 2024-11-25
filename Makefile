@@ -50,3 +50,6 @@ download_mzml_to_local:
 
 run_part1:
 	conda run -n orthrus --live-stream python orthrus_v1/annotated_orthrus_pt1.py
+
+run_part2:
+	conda run -n orthrus --live-stream python orthrus_v1/annotated_orthrus_pt2.py

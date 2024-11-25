@@ -85,7 +85,7 @@ if os.getenv("COLAB_RELEASE_TAG"):
 # %%
 # @title Add inputs -> click `Runtime` -> `Run all`
 # @markdown **_De novo_ peptide sequencing algorithm inputs**
-algorithm = "casanovo"  # @param ["instanovo", "casanovo"]
+algorithm = "instanovo"  # @param ["instanovo", "casanovo"]
 # @markdown - use the drop-down menu to choose the de novo sequencing algorithm
 
 folder_path = "./data/PXD027613/mzML"  # @param {type:"string"}
