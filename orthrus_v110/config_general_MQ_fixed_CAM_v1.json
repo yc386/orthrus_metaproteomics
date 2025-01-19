@@ -1,0 +1,81 @@
+{
+    "database": {
+        "bucket_size": 8192,
+        "enzyme": {
+            "missed_cleavages": 2,
+            "min_len": 6,
+            "max_len": 30,
+            "cleave_at": "KR"
+        },
+        "fragment_min_mz": 150.0,
+        "fragment_max_mz": 1500.0,
+        "peptide_min_mass": 500.0,
+        "peptide_max_mass": 5000.0,
+        "ion_kinds": [
+            "b",
+            "y"
+        ],
+        "min_ion_index": 2,
+        "max_variable_mods": 5,
+        "static_mods": {
+            "C": 57.0215
+        },
+        "variable_mods": {
+            "M": [15.9949],
+            "N": [0.984016],
+            "Q": [0.984016]
+        },
+        "decoy_tag": "rev_",
+        "generate_decoys": true,
+        "fasta": "/content/drive/MyDrive/active/modern_gut/g1/g1.fasta"
+    },
+    "quant": {
+        "lfq": false,
+        "lfq_settings": {
+            "peak_scoring": "Hybrid",
+            "integration": "Sum",
+            "spectral_angle": 0.7,
+            "ppm_tolerance": 5.0
+        }
+    },
+    "precursor_tol": {
+        "ppm": [
+            -7.0,
+            7.0
+        ]
+    },
+    "fragment_tol": {
+        "ppm": [
+            -20.0,
+            20.0
+        ]
+    },
+    "isotope_errors": [
+        0,
+        1
+    ],
+    "precursor_charge": [2, 4],
+    "deisotope": true,
+    "min_peaks": 15,
+    "max_peaks": 150,
+    "min_matched_peaks": 4,
+    "max_fragment_charge": 2,
+    "predict_rt": true,
+    "mzml_paths": [
+        "/content/drive/MyDrive/active/time_series/BLG_S_mgf/time/1007045_BLG_S_T0_1.mgf",
+        "/content/drive/MyDrive/active/time_series/BLG_S_mgf/time/1007046_BLG_S_T0_2.mgf",
+        "/content/drive/MyDrive/active/time_series/BLG_S_mgf/time/1007047_BLG_S_T0_3.mgf",
+        "/content/drive/MyDrive/active/time_series/BLG_S_mgf/time/1007048_BLG_S_T3_1.mgf",
+        "/content/drive/MyDrive/active/time_series/BLG_S_mgf/time/1007049_BLG_S_T3_2.mgf",
+        "/content/drive/MyDrive/active/time_series/BLG_S_mgf/time/1007050_BLG_S_T3_3.mgf",
+        "/content/drive/MyDrive/active/time_series/BLG_S_mgf/time/1007051_BLG_S_T6_1.mgf",
+        "/content/drive/MyDrive/active/time_series/BLG_S_mgf/time/1007052_BLG_S_T6_2.mgf",
+        "/content/drive/MyDrive/active/time_series/BLG_S_mgf/time/1007053_BLG_S_T6_3.mgf",
+        "/content/drive/MyDrive/active/time_series/BLG_S_mgf/time/1007054_BLG_S_T9_1.mgf",
+        "/content/drive/MyDrive/active/time_series/BLG_S_mgf/time/1007055_BLG_S_T9_2.mgf",
+        "/content/drive/MyDrive/active/time_series/BLG_S_mgf/time/1007056_BLG_S_T9_3.mgf",
+        "/content/drive/MyDrive/active/time_series/BLG_S_mgf/time/1007057_BLG_S_T12_1.mgf",
+        "/content/drive/MyDrive/active/time_series/BLG_S_mgf/time/1007058_BLG_S_T12_2.mgf",
+        "/content/drive/MyDrive/active/time_series/BLG_S_mgf/time/1007059_BLG_S_T12_3.mgf"
+    ]
+}
