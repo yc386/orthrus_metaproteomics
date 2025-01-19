@@ -1,6 +1,6 @@
-pt1: Casanovo de novo sequencing 
-pt2: Sage database searching based on de novo results
-pt3: Mokapot machine learning-based rescoring 
+a. pt1: Casanovo de novo sequencing 
+b. pt2: Sage database searching based on de novo results
+c. pt3: Mokapot machine learning-based rescoring 
 (note: Mokapot is separated from Sage, cos Colab runtime needs to restart to resolve numpy 2.x issues)
 
 
