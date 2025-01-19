@@ -1,0 +1,9 @@
+**/data
+test_data/
+data_original/
+orthrus_v1/uniprot_sprot.fasta*
+orthrus_v1/lightning_logs/
+**/.ipynb_checkpoints/
+**/instanovo_extended.ckpt
+outputs/
+uniprot_sprot.fasta*

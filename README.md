@@ -4,7 +4,7 @@
 
 ## Quick start
 - Go to orthrus_v1 folder and choose to open .ipynb files in Colab
-- A Github account will be needed for authorisation. Go to [Github](https://github.com/) and get one if you haven't >_< 
+- A Github account will be needed for authorisation. Go to [Github](https://github.com/) and get one if you haven't >_<
 
 ## Documentation
 - under construction but please see Notebooks' annotations
@@ -12,4 +12,4 @@
 ## FAQs
 1. Do I need a Google Colab subscription?<br>Without any Colab+, general CPU runtime, T4 GPU, and TPU should still be accessible.
 2. Do I need a Google account? <br> May make life easier. Colab can also access files in your Google drive (with permission).
-3. Help! Still unsure how to walk Orthrus. <br> Open an issue or get in touch with me ([preprint](https://www.biorxiv.org/content/10.1101/2024.11.15.623814v1))
+3. Help! Still unsure how to use Orthrus? <br> Open an issue or get in touch with me ([preprint](https://www.biorxiv.org/content/10.1101/2024.11.15.623814v1))
