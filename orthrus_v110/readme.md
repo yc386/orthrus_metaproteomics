@@ -1,3 +1,9 @@
+pt1: Casanovo de novo sequencing 
+pt2: Sage database searching based on de novo results
+pt3: Mokapot machine learning-based rescoring 
+(note: Mokapot is separated from Sage, cos Colab runtime needs to restart to resolve numpy 2.x issues)
+
+
 Orthrus version 1.1.0
 Major changes:
 1. resolve numpy 2.x issues for Mokapot
