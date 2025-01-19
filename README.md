@@ -3,7 +3,7 @@
 ![orthrus_workflow_v2](https://github.com/user-attachments/assets/9203545f-751b-4c49-b9b0-5c8a6e41de9b)
 
 ## Quick start
-- Go to orthrus_v1 folder and choose to open .ipynb files in Colab
+- Go to orthrus_v110 folder and choose to open .ipynb files in Colab
 - A Github account will be needed for authorisation. Go to [Github](https://github.com/) and get one if you haven't >_< 
 
 ## Documentation
