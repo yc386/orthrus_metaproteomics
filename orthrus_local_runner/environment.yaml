@@ -1,0 +1,18 @@
+name: orthrus_metaproteomics
+channels:
+  - defaults
+  - conda-forge
+  - bioconda
+dependencies:
+  - python=3.10
+  - ipykernel
+  - numpy=1.26.4
+  - pandas=2.1.4
+  - scikit-learn=1.5.2
+  - xgboost=3.0.4
+  - pip
+  - pip:
+      - biopython==1.85
+      - mokapot==0.10.0
+      - casanovo==4.3.0
+      - pyteomics==4.7.5
