@@ -3,11 +3,28 @@
 ![orthrus_workflow_v2](https://github.com/user-attachments/assets/9203545f-751b-4c49-b9b0-5c8a6e41de9b)
 
 ## Quick start
-- Go to orthrus_v110 folder and choose to open .ipynb files in Colab
-- A Github account will be needed for authorisation. Go to [Github](https://github.com/) and get one if you haven't >_< 
+For cloud execution:<br/>
+Click orthrus_cloud_stable_v100 folder, open .ipynb notebooks in Colab, and just follow the notebook instructions from there!
+- please note: a Github account will be needed for authorisation. Go to [Github](https://github.com/) and get one if you haven't >_< 
 
-## Documentation
-- under construction but please see Notebooks' annotations
+For local execution:<br/>
+```Python
+git clone https://github.com/yc386/orthrus_metaproteomics.git
+cd orthrus_metaproteomics/orthrus_local_runner
+mamba env create -f environment.yaml
+conda activate orthrus_metaproteomics
+python orthrus_local_runner/walking_orthrus_locally_stable_v100.py --help
+```
+
+basic usage
+```Python
+python orthrus_local_runner/walking_orthrus_locally_stable_v100.py --folder_path path_to_folder --file_type mgf --use_SwissProt \
+--sage_path path_to_sage_binary --json_file_path path_to_sage_json \
+--missed_cleavages 1 --max_variable_mods 2 \
+--static_CAM --aas P N Q --mods 15.994915 0.984016 0.984016 \
+--default_Percolator --joint_modelling
+
+```
 
 ## FAQs
 1. Do I need a Google Colab subscription?<br>Without any Colab+, general CPU runtime, T4 GPU, and TPU should still be accessible.
