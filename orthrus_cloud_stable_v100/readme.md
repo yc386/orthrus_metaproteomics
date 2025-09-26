@@ -4,3 +4,7 @@ Here is the collection of three Colab notebooks:
 3. orthrus_stable_v100_main.ipynb - walking Orthrus from de novo sequencing (Casanovo) to database searching + rescoring (Sage + Mokapot)
 
 Library versions are pinned for stability. Colab runtime will automatically restart to refresh the environment and prevent version conflicts. 
+
+Supporting files:
+1. config_420_precursor_7_ppm.yaml - a sample of configuration file for Casanovo 4x
+2. 
