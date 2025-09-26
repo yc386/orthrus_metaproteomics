@@ -13,12 +13,12 @@ git clone https://github.com/yc386/orthrus_metaproteomics.git
 cd orthrus_metaproteomics/orthrus_local_runner
 mamba env create -f environment.yaml
 conda activate orthrus_metaproteomics
-python orthrus_local_runner/walking_orthrus_locally_stable_v100.py --help
+python walking_orthrus_locally_stable_v100.py --help
 ```
 
 basic usage
 ```Python
-python orthrus_local_runner/walking_orthrus_locally_stable_v100.py --folder_path path_to_folder --file_type mgf --use_SwissProt \
+python walking_orthrus_locally_stable_v100.py --folder_path path_to_folder --file_type mgf --use_SwissProt \
 --sage_path path_to_sage_binary --json_file_path path_to_sage_json \
 --missed_cleavages 1 --max_variable_mods 2 \
 --static_CAM --aas P N Q --mods 15.994915 0.984016 0.984016 \
