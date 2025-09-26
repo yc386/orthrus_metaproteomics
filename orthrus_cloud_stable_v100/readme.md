@@ -7,4 +7,4 @@ Library versions are pinned for stability. Colab runtime will automatically rest
 
 Supporting files:
 1. config_420_precursor_7_ppm.yaml - a sample of configuration file for Casanovo 4x
-2. 
+2. config_general_MQ_fixed_CAM_v1.json - a sample of Sage-compatible JSON configuration file
